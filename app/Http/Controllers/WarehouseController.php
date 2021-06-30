@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\WarehouseResource;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,28 +12,19 @@ class WarehouseController extends Controller
 {
     public function index(Request $request)
     {
-        return Warehouse::query()->get();
+        return WarehouseResource::collection(Warehouse::query()->get());
     }
 
-    public function show($id)
+    public function show(Warehouse $warehouse)
     {
-        $warehouse = Warehouse::find($id);
-
-        if (is_null($warehouse)) {
-            return response()->json(['error' => 'Warehouse not found'], Response::HTTP_NOT_FOUND);
-        }
-
-        $warehouse->extras;
         return $warehouse;
     }
 
     public function store(Request $request)
     {
-        $validator = $this->validateRequest($request);
-
-        if ($validator->fails()) {
-            return response()->json(["error" => $validator->errors()], Response::HTTP_BAD_REQUEST);
-        }
+        $request->validate([
+            'name' => 'required|min:2|max:255|string|unique:warehouses',
+        ]);
 
         $warehouse = Warehouse::create($request->all());
         return response()->json($warehouse, Response::HTTP_CREATED);
@@ -63,10 +55,8 @@ class WarehouseController extends Controller
     private function validateRequest(Request $request)
     {
         $rules = [
-            'name' => 'required|min:2|string|unique:warehouses',
+            'name' => 'required|min:2|max:255|string|unique:warehouses',
         ];
 
-        $validator = Validator::make($request->all(), $rules);
-        return $validator;
     }
 }

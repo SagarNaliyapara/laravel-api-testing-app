@@ -2,28 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\BikeResource;
 use App\Models\Bike;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 class BikeController extends Controller
 {
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
-        return Bike::all();
+        return BikeResource::collection(Bike::query()->paginate());
     }
 
-    public function show($id)
+    public function show($id): BikeResource
     {
         $bike = Bike::find($id);
         abort(404);
         if (is_null($bike)) {
-            return response()->json(['error' => 'Bike not found'], Response::HTTP_NOT_FOUND);
-        } else
+            abort(404);
+        } else {
             $bike->order;
-        return response()->json($bike, Response::HTTP_OK);
+        }
+        return new BikeResource($bike);
     }
 
     public function store(Request $request)
@@ -64,20 +66,5 @@ class BikeController extends Controller
             $bike->delete();
             return response()->json(["response" => "Bike has been deleted"], Response::HTTP_ACCEPTED);
         }
-    }
-
-    public function getBikeGraph()
-    {
-        return Bike::select(['model', 'size', DB::raw("COUNT(*) as count")])->groupBy('model', 'size')->get();
-    }
-
-    public function getBikeModels()
-    {
-        return Bike::select('model')->distinct()->get();
-    }
-
-    public function getBikeSizes()
-    {
-        return Bike::select('size')->distinct()->get();
     }
 }

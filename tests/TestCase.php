@@ -10,5 +10,6 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
     use RefreshDatabase;
 
-    protected $seed = true;
+//    protected $seed = true;
+//    protected $seeder = TestSeeder::class;
 }

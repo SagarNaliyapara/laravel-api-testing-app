@@ -12,7 +12,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // Warehouse
 Route::get('warehouses', [WarehouseController::class, 'index'])->name('warehouses.index');
-Route::get('warehouses/{id}', [WarehouseController::class, 'show'])->name('warehouses.show');
+Route::get('warehouses/{warehouse}', [WarehouseController::class, 'show'])->name('warehouses.show');
 Route::post('warehouses', [WarehouseController::class, 'store'])->name('warehouses.store');
 Route::put('warehouses/{id}', [WarehouseController::class, 'update'])->name('warehouses.update');
 Route::delete('warehouses/{id}', [WarehouseController::class, 'destroy'])->name('warehouses.destroy');
@@ -23,13 +23,6 @@ Route::get('bikes/{id}', [BikeController::class, 'show'])->name('bikes.show');
 Route::patch('bikes/{id}', [BikeController::class, 'update'])->name('bikes.update');
 Route::post('bikes', [BikeController::class, 'store'])->name('bikes.store');
 Route::delete('bikes/{id}', [BikeController::class, 'destroy'])->name('bikes.destroy');
-
-// For getting bike unique models and sizes
-Route::get('bike/models', [BikeController::class, 'getBikeModels'])->name('bikes.models');
-Route::get('bike/sizes', [BikeController::class, 'getBikeSizes'])->name('bikes.size');
-
-// bikeGraph
-Route::get('bike/bikegraph', [BikeController::class, 'getBikeGraph'])->name('bikes.graph');
 
 // Order
 Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
